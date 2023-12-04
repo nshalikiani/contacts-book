@@ -17,4 +17,5 @@ public interface ContactsRepository extends JpaRepository<ContactEntity, Integer
     ContactEntity findContactEntitiesByContactOwnerEmailAndId (String contactOwnerEmail, String Id);
 
     List<ContactEntity> findContactEntitiesByPhoneNumberAndContactOwnerEmail (String phoneNumber, String contactOwnerEmail);
+
 }

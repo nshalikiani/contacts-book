@@ -3,10 +3,7 @@ package com.dga.contactbook.contacts.service;
 import com.dga.contactbook.contacts.ContactsDto;
 import com.dga.contactbook.contacts.ContactEntity;
 import com.dga.contactbook.contacts.repository.ContactsRepository;
-import com.dga.contactbook.contacts.request.AddNewContactRequest;
-import com.dga.contactbook.contacts.request.ContactsByCustomerRequest;
-import com.dga.contactbook.contacts.request.GetContactByPhoneNumberRequest;
-import com.dga.contactbook.contacts.request.UpdateContactRequest;
+import com.dga.contactbook.contacts.request.*;
 import com.dga.contactbook.contacts.response.AddNewContactResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +75,17 @@ public class ContactsService {
         repository.save(contact);
 
         return "Contact Updated Successfully";
+    }
+
+    public String deleteContract (DeleteContactRequest request){
+
+        String contactsOwner = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        ContactEntity contact = repository.findContactEntitiesByContactOwnerEmailAndId(contactsOwner, request.getId());
+
+        repository.delete(contact);
+
+        return "Contact deleted Successfully";
     }
 
     private List<ContactsDto> mapContactsEntitiesToDto(List<ContactEntity> contactsEntities) {

@@ -1,10 +1,7 @@
 package com.dga.contactbook.contacts.controller;
 
 import com.dga.contactbook.contacts.ContactsDto;
-import com.dga.contactbook.contacts.request.AddNewContactRequest;
-import com.dga.contactbook.contacts.request.ContactsByCustomerRequest;
-import com.dga.contactbook.contacts.request.GetContactByPhoneNumberRequest;
-import com.dga.contactbook.contacts.request.UpdateContactRequest;
+import com.dga.contactbook.contacts.request.*;
 import com.dga.contactbook.contacts.response.AddNewContactResponse;
 import com.dga.contactbook.contacts.service.ContactsService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,13 @@ public class ContactsController {
             @RequestBody UpdateContactRequest request
     ) {
         return ResponseEntity.ok(service.updateContact(request));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteContact(
+            @RequestBody DeleteContactRequest request
+    ) {
+        return ResponseEntity.ok(service.deleteContract(request));
     }
 
 }
