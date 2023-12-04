@@ -5,6 +5,7 @@ import com.dga.contactbook.contacts.ContactEntity;
 import com.dga.contactbook.contacts.repository.ContactsRepository;
 import com.dga.contactbook.contacts.request.*;
 import com.dga.contactbook.contacts.response.AddNewContactResponse;
+import jakarta.persistence.UniqueConstraint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,12 @@ public class ContactsService {
                 .contactOwnerEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                 .phoneNumber(request.getPhoneNumber())
                 .build();
-        repository.save(contact);
+
+        try {
+            repository.save(contact);
+        } catch (Exception e) {
+            return new AddNewContactResponse(null, e.getMessage());
+        }
 
         return new AddNewContactResponse(contact.getId(), "Contact Added Successfully");
     }
@@ -47,6 +53,7 @@ public class ContactsService {
         Page<ContactEntity> contactsEntities = repository.findContactEntitiesByContactOwnerEmail(contactsOwner, pageable);
 
         List<ContactsDto> contactsDtoList = mapContactsEntitiesToDto(contactsEntities.getContent());
+
         return new PageImpl<>(contactsDtoList, pageable, contactsDtoList.size());
 
     }
@@ -61,7 +68,7 @@ public class ContactsService {
         return mapContactsEntitiesToDto(contactEntity);
     }
 
-    public String updateContact (UpdateContactRequest request) {
+    public String updateContact(UpdateContactRequest request) {
 
         String contactsOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -72,18 +79,27 @@ public class ContactsService {
         contact.setPhoneNumber(request.getPhoneNumber());
         contact.setContactEmail(request.getContactEmail());
 
-        repository.save(contact);
+        try {
+            repository.save(contact);
+        } catch (Exception e) {
+
+            return e.getMessage();
+        }
 
         return "Contact Updated Successfully";
     }
 
-    public String deleteContract (DeleteContactRequest request){
+    public String deleteContract(DeleteContactRequest request) {
 
         String contactsOwner = SecurityContextHolder.getContext().getAuthentication().getName();
 
         ContactEntity contact = repository.findContactEntitiesByContactOwnerEmailAndId(contactsOwner, request.getId());
 
-        repository.delete(contact);
+        try {
+            repository.delete(contact);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
 
         return "Contact deleted Successfully";
     }
